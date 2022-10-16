@@ -3,9 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <title>Crossword Puzzle Maker</title>
+    <style>
+        .row {
+            clear: both;
+        }
+        .cell {
+            float: left;
+            width: 22px;
+            height: 22px;
+            padding: 2px;
+            text-align: center;
+        }
+        .cell-char {
+            border: 1px solid black;
+            border-radius: 2px;
+            font-size: 125%;
+            background-color: white;
+        }
+        .cell-empty {
+            border: 1px solid transparent;
+        }
+        .cell-char span {
+            font-size: 50%;
+        }
+        .cell-char .cell-annotated {
+            text-align: left;
+        }
+    </style>
 </head>
 <body>
-Hello
+<textarea id="input">
+Avocado
+Beet
+Broccoli
+Cabbage
+Carrot
+Corn
+Garlic
+Kohlrabi
+Mushroom
+Onion
+Pea
+Potato
+Pumpkin
+Radish
+Tomato
+Zucchini
+</textarea>
+<div id="output1">
+
+</div>
 <script src="../target/scala-3.2.0/crossword-puzzle-maker-fastopt.js"></script>
 </body>
 </html>
