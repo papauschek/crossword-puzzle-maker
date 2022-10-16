@@ -1,9 +1,13 @@
-ThisBuild / version := "0.1.0-SNAPSHOT"
+enablePlugins(ScalaJSPlugin)
 
-ThisBuild / scalaVersion := "2.13.10"
+name := "crossword-puzzle-maker"
 
-lazy val root = (project in file("."))
-  .settings(
-    name := "crossword-puzzle-maker",
-    idePackagePrefix := Some("com.papauschek")
-  )
+version := "0.1.0-SNAPSHOT"
+
+scalaVersion := "3.2.0"
+
+libraryDependencies ++= Seq(
+  "org.scala-js" %%% "scalajs-dom" % "2.1.0"
+)
+
+scalaJSUseMainModuleInitializer := true
