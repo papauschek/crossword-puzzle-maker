@@ -50,7 +50,7 @@ object CrosswordMain {
     printFinalPuzzle(mainWords, puzzle)
 
     // render
-    val output = HtmlRenderer.render(puzzle)
+    val output = HtmlRenderer.render(puzzle, 1000, showSolution = false)
     Files.write(new File("puzzle.html").toPath, output.getBytes("UTF8"))
     Files.write(new File("output.txt").toPath, outputBuffer.toString.getBytes("UTF8"))
   }

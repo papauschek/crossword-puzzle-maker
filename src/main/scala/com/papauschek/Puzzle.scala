@@ -169,6 +169,31 @@ case class Puzzle(chars: Array[Char], // fields of chars, empty = space char.
     }).takeWhile(!_.isWhitespace).mkString
   }
 
+  def getCharsShownInPartialSolution(random: Random = new Random(hashCode),
+                                     solvedFraction: Double = 0.30): Set[Point] = {
+    var resultSet = Set.empty[Point]
+
+    // randomly select `solvedFraction` random fraction of points, but no direct neighbors
+    for {
+      x <- 0 until config.width
+      y <- 0 until config.height if hasChar(x, y)
+    } yield {
+      val point = Point(x, y)
+      val hasVerticalNeighbor = hasChar(x, y - 1) || hasChar(x, y + 1)
+      val hasHorizontalNeighbor = hasChar(x - 1, y) || hasChar(x + 1, y)
+      val isIntersection = hasVerticalNeighbor && hasHorizontalNeighbor
+      if (!isIntersection
+        && random.nextDouble() < solvedFraction
+        && !resultSet.contains(Point(point.x - 1, point.y))
+        && !resultSet.contains(Point(point.x, point.y - 1))) {
+        resultSet += point
+      }
+    }
+
+    resultSet
+  }
+
+
 }
 
 case class AnnotatedPoint(index: Int, vertical: Boolean, word: String)
