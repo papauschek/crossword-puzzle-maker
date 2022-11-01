@@ -50,7 +50,7 @@ object CrosswordMain {
     printFinalPuzzle(mainWords, puzzle)
 
     // render
-    val output = HtmlRenderer.render(puzzle, 1000, showSolution = false)
+    val output = HtmlRenderer.renderPuzzle(puzzle, 1000, showSolution = false)
     Files.write(new File("puzzle.html").toPath, output.getBytes("UTF8"))
     Files.write(new File("output.txt").toPath, outputBuffer.toString.getBytes("UTF8"))
   }
@@ -59,7 +59,7 @@ object CrosswordMain {
     if (new File(filename).exists) {
       ??? //Puzzle.load(filename)
     } else {
-      create(mainWords)
+      ??? //create(mainWords)
     }
   }
 
@@ -71,19 +71,16 @@ object CrosswordMain {
    - 53% sorted by frequency average
    - 52% shortest to longest
    */
-  def create(mainWords: Seq[String]): Puzzle = {
+  def create(mainWords: Seq[String], config: PuzzleConfig): Puzzle = {
     println("word db: " + mainWords.tail.length)
+    val minSize = mainWords.maxByOption(_.length).map(_.length).getOrElse(1)
+    val minConfig = config.copy(width = config.width.max(minSize), height = config.height.max(minSize))
     val start = System.currentTimeMillis()
-    val config = PuzzleConfig(
-      width = 12,
-      height = 12
-    )
-
     var bestRating = 0.0
     var count = 0
     val puzzles = (0 until 1000).flatMap {
       _ =>
-        val puzzles = Puzzle.generate(mainWords.head, mainWords.tail.toList, config)
+        val puzzles = Puzzle.generate(mainWords.head, mainWords.tail.toList, minConfig)
         val puzzle = puzzles.maxBy(_.rating)
         count += 1
         if (puzzle.rating > bestRating) {
@@ -91,7 +88,7 @@ object CrosswordMain {
           System.out.println(s"Best rating: ${puzzle.rating} (${puzzle.density}%) - $count")
         }
         puzzles
-    }.seq.sortBy(- _.rating)
+    }.sortBy(- _.rating)
     val end = System.currentTimeMillis()
     println("ms: " + (end - start))
 

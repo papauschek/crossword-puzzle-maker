@@ -2,17 +2,17 @@ package com.papauschek
 
 import org.scalajs.dom
 
-object HtmlRenderer {
+object HtmlRenderer:
 
-  def render(puzzle: Puzzle, widthInPixels: Int,
-             showSolution: Boolean = false,
-             showPartialSolution: Boolean = false): String = {
+  def renderPuzzle(puzzle: Puzzle, widthInPixels: Int,
+                   showSolution: Boolean = false,
+                   showPartialSolution: Boolean = false): String =
 
     val annotation = puzzle.getAnnotation
 
     val partialPoints = puzzle.getCharsShownInPartialSolution()
 
-    def renderCell(x: Int, y: Int): String = {
+    def renderCell(x: Int, y: Int): String =
       puzzle.getChar(x, y) match {
         case ' ' => s"""<div class="crossword-cell crossword-cell-empty"></div>"""
         case char =>
@@ -31,14 +31,12 @@ object HtmlRenderer {
             case _ => s"""<div class="crossword-cell crossword-cell-char">$shownSolution</div>"""
           }
       }
-    }
 
-    def renderHeight(y: Int): String = {
+    def renderHeight(y: Int): String =
       val cellWidth = widthInPixels / puzzle.config.width
       val style = s"font-size: ${cellWidth}px"
       val renderedRow = (0 until puzzle.config.width).map(renderCell(_, y)).mkString("\r\n")
       s"""<div class="crossword-row" style="$style">$renderedRow</div>"""
-    }
 
     val renderedPuzzle =
       (0 until puzzle.config.height).map(renderHeight).mkString("\r\n")
@@ -64,6 +62,12 @@ object HtmlRenderer {
       |  </div>
       |</div>
       |""".stripMargin
-  }
 
-}
+
+  def renderPuzzleInfo(puzzle: Puzzle, unusedWords: Seq[String]): String =
+    val infoText = s"This puzzle has a <strong>density of ${(puzzle.density * 100).round}%</strong>. " +
+      s"This is the area covered by letters. " +
+      s"If you prefer a more dense puzzle, add more words to the list above and let the tool discard the words that do not fit well. "
+    val unusedInfoText = Option.when(unusedWords.nonEmpty)(s"The following words from your list were NOT used: ${unusedWords.mkString(", ")}").mkString
+    infoText + unusedInfoText
+

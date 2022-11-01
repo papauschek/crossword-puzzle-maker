@@ -50,11 +50,11 @@
         <div class="col-lg-6">
 
             <h2><i class="bi bi-1-circle"></i> Enter Your Words</h2>
-            <p class="lead">
-                Create a puzzle by entering a list of words.
-            </p>
             <div class="mb-3">
-                <label for="input" class="form-label">List of words</label>
+                <label for="input" class="form-label">
+                    These words will be used to create your crossword puzzle.
+                    A minimum of 20 words is recommended, the more, the better!
+                </label>
                 <textarea class="form-control" id="input" rows="10">
 Avocado
 Beet
@@ -94,6 +94,15 @@ Zucchini
         <div class="col">
 
             <h2><i class="bi bi-3-circle"></i> Result</h2>
+            <p>
+                Here is a first version of your new puzzle. Not all words from your list may be used.
+                This is intentional: the tool tries to create the puzzle with the most letters possible (or least whitespace).
+                The available size you specified might not be enough to fit all the words. If you want to include more words, you can increase the size.
+            </p>
+
+            <div class="alert alert-info" role="alert" id="result-info">
+                Info
+            </div>
 
             <div class="btn-group mb-3" role="group" aria-label="Basic radio toggle button group">
                 <input type="radio" class="btn-check" name="btnradio" id="result-without" autocomplete="off">
