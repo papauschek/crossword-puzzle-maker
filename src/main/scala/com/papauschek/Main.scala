@@ -8,7 +8,7 @@ import org.scalajs.dom.html.{Button, Div, Input}
  * TODO UI
  * - show words that were not used
  * - show density
- *
+ * - allow refinement with dictionaries
  */
 
 
@@ -27,7 +27,7 @@ object Main:
   private val resultFullElement = dom.document.getElementById("result-full").asInstanceOf[Input]
 
   def main(args: Array[String]): Unit =
-    generateSolution()
+    //generateSolution()
     generateButton.addEventListener("click", { _ => generateSolution() })
 
     resultWithoutElement.addEventListener("click", { _ => updateSolution() })
