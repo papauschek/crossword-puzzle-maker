@@ -25,6 +25,10 @@ object Main:
   private val heightInputElement = dom.document.getElementById("height").asInstanceOf[Input]
 
   def main(args: Array[String]): Unit =
+
+    println(Globals.german.length)
+    println(Globals.english.length)
+
     generateSolution()
     generateButton.addEventListener("click", { _ => generateSolution() })
 

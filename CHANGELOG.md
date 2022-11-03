@@ -3,14 +3,11 @@
 ## Changes
 * 1.11.2022: Added Bootstrap, Implemented Basic UI (Sizing of Puzzle)
 * 2.11.2022: Support different sizes, Show unused words and density
+* 3.11.2022: Add dictionaries for refinement feature. Add licenses. 
 
 ## TODO
 * Finalize UI
-  * Support Refinement with dictionaries
-* Improve Refinement Feature
-  * Better dictionaries (including questions?)
-  * https://github.com/fiee/croisee/tree/master/wordlists/de
-  * https://cryptics.georgeho.org/data/clues?_next=100
+  * Support Refinement with dictionaries, including clues.
 * Improve Performance
   * Add loading indicator
   * Check worker threads
@@ -19,4 +16,3 @@
   * Readme.md
 * Release + Post
   * Dockerfile
-
