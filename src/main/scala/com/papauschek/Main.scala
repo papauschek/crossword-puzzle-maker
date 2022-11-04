@@ -8,11 +8,14 @@ import org.scalajs.dom.html.{Button, Div, Input}
 
 object Main:
 
-  private var puzzle: Puzzle = Puzzle.empty(PuzzleConfig())
+  private var initialPuzzle: Puzzle = Puzzle.empty(PuzzleConfig())
+  private var refinedPuzzle: Puzzle = initialPuzzle
+
   private var mainInputWords: Seq[String] = Nil
 
   private val inputElement = dom.document.getElementById("input")
-  private val outputElement = dom.document.getElementById("output1")
+  private val outputPuzzleElement = dom.document.getElementById("output-puzzle")
+  private val outputCluesElement = dom.document.getElementById("output-clues")
   private val resultInfoElement = dom.document.getElementById("result-info")
 
   private val generateButton = dom.document.getElementById("generate-button").asInstanceOf[Button]
@@ -24,6 +27,8 @@ object Main:
   private val widthInputElement = dom.document.getElementById("width").asInstanceOf[Input]
   private val heightInputElement = dom.document.getElementById("height").asInstanceOf[Input]
 
+  private val refineButton = dom.document.getElementById("refine-button").asInstanceOf[Button]
+
   def main(args: Array[String]): Unit =
 
     println(Globals.german.length)
@@ -31,10 +36,11 @@ object Main:
 
     generateSolution()
     generateButton.addEventListener("click", { _ => generateSolution() })
+    refineButton.addEventListener("click", { _ => refineSolution() })
 
-    resultWithoutElement.addEventListener("click", { _ => updateSolution() })
-    resultPartialElement.addEventListener("click", { _ => updateSolution() })
-    resultFullElement.addEventListener("click", { _ => updateSolution() })
+    resultWithoutElement.addEventListener("click", { _ => renderSolution() })
+    resultPartialElement.addEventListener("click", { _ => renderSolution() })
+    resultFullElement.addEventListener("click", { _ => renderSolution() })
 
 
   def generateSolution(): Unit =
@@ -44,21 +50,27 @@ object Main:
       width = widthInputElement.valueAsNumber.toInt,
       height = heightInputElement.valueAsNumber.toInt
     )
-    puzzle = CrosswordMain.create(mainInputWords, puzzleConfig)
-    updateSolution()
+    initialPuzzle = CrosswordMain.create(mainInputWords, puzzleConfig)
+    refinedPuzzle = initialPuzzle
+    renderSolution()
 
 
-  def updateSolution(): Unit =
+  def renderSolution(): Unit =
     val showPartialSolution = resultPartialElement.checked
     val showFullSolution = resultFullElement.checked
 
-    outputElement.innerHTML = HtmlRenderer.renderPuzzle(
-      puzzle,
-      widthInPixels = outputElement.clientWidth,
+    outputPuzzleElement.innerHTML = HtmlRenderer.renderPuzzle(
+      refinedPuzzle,
+      widthInPixels = outputPuzzleElement.clientWidth,
       showSolution = showFullSolution,
       showPartialSolution = showPartialSolution)
 
-    val unusedWords = mainInputWords.filterNot(puzzle.words.contains)
+    val unusedWords = mainInputWords.filterNot(refinedPuzzle.words.contains)
+    resultInfoElement.innerHTML = HtmlRenderer.renderPuzzleInfo(refinedPuzzle, unusedWords)
+    outputCluesElement.innerHTML = HtmlRenderer.renderClues(refinedPuzzle)
 
-    resultInfoElement.innerHTML = HtmlRenderer.renderPuzzleInfo(puzzle, unusedWords)
 
+  def refineSolution(): Unit =
+    val list = Globals.german.map(_(0)).toList
+    refinedPuzzle = Puzzle.finalize(initialPuzzle, list)
+    renderSolution()

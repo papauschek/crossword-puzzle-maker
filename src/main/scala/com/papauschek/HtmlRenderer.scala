@@ -38,9 +38,15 @@ object HtmlRenderer:
       val renderedRow = (0 until puzzle.config.width).map(renderCell(_, y)).mkString("\r\n")
       s"""<div class="crossword-row" style="$style">$renderedRow</div>"""
 
-    val renderedPuzzle =
-      (0 until puzzle.config.height).map(renderHeight).mkString("\r\n")
+    val renderedPuzzle = (0 until puzzle.config.height).map(renderHeight).mkString("\r\n")
 
+    s"""$renderedPuzzle
+      |<div style="clear: both" class="mb-4"></div>""".stripMargin
+
+
+  def renderClues(puzzle: Puzzle): String =
+
+    val annotation = puzzle.getAnnotation
     val sortedAnnotationValues = annotation.values.flatten.toSeq.sortBy(_.index)
 
     def renderDescriptions(vertical: Boolean): String = {
@@ -49,19 +55,17 @@ object HtmlRenderer:
       }.mkString("\r\n")
     }
 
-    s"""$renderedPuzzle
-      |<div style="clear: both" class="mb-5"></div>
-      |<div class="row">
-      |  <div class="col-lg-6">
-      |    <h4>Horizontal</h4>
-      |    <p>${renderDescriptions(vertical = false)}</p>
-      |  </div>
-      |  <div class="col-lg-6">
-      |    <h4>Vertical</h4>
-      |    <p>${renderDescriptions(vertical = true)}</p>
-      |  </div>
-      |</div>
-      |""".stripMargin
+    s"""<div class="row">
+       |  <div class="col-lg-6">
+       |    <h4>Horizontal</h4>
+       |    <p>${renderDescriptions(vertical = false)}</p>
+       |  </div>
+       |  <div class="col-lg-6">
+       |    <h4>Vertical</h4>
+       |    <p>${renderDescriptions(vertical = true)}</p>
+       |  </div>
+       |</div>
+       |""".stripMargin
 
 
   def renderPuzzleInfo(puzzle: Puzzle, unusedWords: Seq[String]): String =
