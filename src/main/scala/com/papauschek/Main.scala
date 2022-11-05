@@ -2,7 +2,10 @@ package com.papauschek
 
 import org.scalajs.dom
 import org.scalajs.dom.Element
-import org.scalajs.dom.html.{Button, Div, Input}
+import org.scalajs.dom.html.{Button, Div, Input, Select}
+
+import scala.scalajs.js
+import scala.scalajs.js.Object.{entries, keys}
 
 
 
@@ -27,13 +30,10 @@ object Main:
   private val widthInputElement = dom.document.getElementById("width").asInstanceOf[Input]
   private val heightInputElement = dom.document.getElementById("height").asInstanceOf[Input]
 
+  private val languageSelect = dom.document.getElementById("language-select").asInstanceOf[Select]
   private val refineButton = dom.document.getElementById("refine-button").asInstanceOf[Button]
 
   def main(args: Array[String]): Unit =
-
-    println(Globals.german.length)
-    println(Globals.english.length)
-
     generateSolution()
     generateButton.addEventListener("click", { _ => generateSolution() })
     refineButton.addEventListener("click", { _ => refineSolution() })
@@ -44,7 +44,8 @@ object Main:
 
 
   def generateSolution(): Unit =
-    val inputWords = inputElement.innerHTML.linesIterator.map(_.trim.toUpperCase).filter(_.nonEmpty).toSeq
+    val rawInputWords = inputElement.innerHTML.linesIterator.map(normalizeWord).toSeq
+    val inputWords = rawInputWords.filter(word => word.nonEmpty && !word.startsWith("#"))
     mainInputWords = WordRating.getBest(inputWords)
     val puzzleConfig = PuzzleConfig(
       width = widthInputElement.valueAsNumber.toInt,
@@ -71,6 +72,16 @@ object Main:
 
 
   def refineSolution(): Unit =
-    val list = Globals.german.map(_(0)).toList
-    refinedPuzzle = Puzzle.finalize(initialPuzzle, list)
+    val language = languageSelect.value
+    val words = Globals.window(language)
+    println(words.length)
+    refinedPuzzle = Puzzle.finalize(initialPuzzle, words.toList)
     renderSolution()
+
+  /** normalize words and expand german umlauts */
+  private def normalizeWord(word: String): String =
+    word.trim.toUpperCase.
+      replace("Ä", "AE").
+      replace("Ö", "OE").
+      replace("Ü", "UE").
+      replace("ß", "SS")

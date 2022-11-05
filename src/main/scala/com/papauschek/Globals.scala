@@ -6,6 +6,15 @@ import scala.scalajs.js.annotation._
 @js.native
 @JSGlobalScope
 object Globals extends js.Object {
-  var german: js.Array[js.Array[String]] = js.native
-  var english: js.Array[js.Array[String]] = js.native
+
+  def window: Window = js.native
+
+}
+
+@js.native
+trait Window extends js.Object {
+
+  @JSBracketAccess
+  def apply(language: String): js.Array[String] = js.native
+
 }

@@ -34,7 +34,7 @@ object HtmlRenderer:
 
     def renderHeight(y: Int): String =
       val cellWidth = widthInPixels / puzzle.config.width
-      val style = s"font-size: ${cellWidth}px"
+      val style = s"font-size: ${cellWidth}px; width: ${widthInPixels}px"
       val renderedRow = (0 until puzzle.config.width).map(renderCell(_, y)).mkString("\r\n")
       s"""<div class="crossword-row" style="$style">$renderedRow</div>"""
 

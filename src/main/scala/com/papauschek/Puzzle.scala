@@ -229,7 +229,7 @@ object Puzzle {
   }
 
   def finalize(puzzle: Puzzle, words: List[String]) : Puzzle = {
-    val sorted = Random.shuffle(words).sortBy(- _.length)
+    val sorted = Random.shuffle(words).take(10000).sortBy(- _.length)
     generate(puzzle, sorted, Nil)
   }
 
