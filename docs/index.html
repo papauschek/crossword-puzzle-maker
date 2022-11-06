@@ -40,13 +40,18 @@
             text-align: left;
         }
     </style>
+    <style media="print">
+        .print-hidden {
+            display: none;
+        }
+    </style>
 </head>
 
 <body>
 <div class="container">
     <h1>Crossword Puzzle Generator</h1>
 
-    <div class="row">
+    <div class="row print-hidden">
         <div class="col-lg-6">
 
             <h2><i class="bi bi-1-circle"></i> Enter Your Words</h2>
@@ -93,34 +98,41 @@ Zucchini
     <div class="row">
         <div class="col">
 
-            <h2><i class="bi bi-3-circle"></i> Result</h2>
-            <p>
+            <h2 class="print-hidden"><i class="bi bi-3-circle"></i> Result</h2>
+            <p class="print-hidden">
                 Here is a first version of your new puzzle. Not all words from your list may be used.
                 This is intentional: the tool tries to create the puzzle with the most letters possible (or least whitespace).
                 The available size you specified might not be enough to fit all the words. If you want to include more words, you can increase the size.
             </p>
 
-            <div class="alert alert-info" role="alert" id="result-info">
+            <div class="alert alert-info print-hidden" role="alert" id="result-info">
                 Info
             </div>
 
-            <div class="btn-group mb-3" role="group" aria-label="Basic radio toggle button group">
-                <input type="radio" class="btn-check" name="btnradio" id="result-without" autocomplete="off">
-                <label class="btn btn-outline-primary" for="result-without">Without Solution</label>
+            <div class="row print-hidden">
+                <div class="col-lg-6">
+                    <div class="btn-group mb-3" role="group" aria-label="Basic radio toggle button group">
+                        <input type="radio" class="btn-check" name="btnradio" id="result-without" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="result-without">Without Solution</label>
 
-                <input type="radio" class="btn-check" name="btnradio" id="result-partial" autocomplete="off" checked>
-                <label class="btn btn-outline-primary" for="result-partial">Partial Solution</label>
+                        <input type="radio" class="btn-check" name="btnradio" id="result-partial" autocomplete="off" checked>
+                        <label class="btn btn-outline-primary" for="result-partial">Partial Solution</label>
 
-                <input type="radio" class="btn-check" name="btnradio" id="result-full" autocomplete="off">
-                <label class="btn btn-outline-primary" for="result-full">Full Solution</label>
+                        <input type="radio" class="btn-check" name="btnradio" id="result-full" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="result-full">Full Solution</label>
+                    </div>
+                </div>
+                <div class="col-lg-6" style="text-align: right">
+                    <button type="button" class="btn btn-secondary" id="print-button"><i class="bi bi-printer-fill"></i> Print</button>
+                </div>
             </div>
 
-            <div id="output-puzzle"></div>
+            <div id="output-puzzle" class="mb-3"></div>
 
         </div>
     </div>
 
-    <div class="row">
+    <div class="row print-hidden">
         <div class="col">
 
             <h2><i class="bi bi-4-circle"></i> Add additional words from a dictionary <span class="text-muted">(Optional)</span></h2>
@@ -146,8 +158,11 @@ Zucchini
     <div class="row">
         <div class="col">
 
-            <h2><i class="bi bi-5-circle"></i> Write Clues</h2>
-
+            <h2><i class="bi bi-5-circle print-hidden"></i> Solution & Clues</h2>
+            <p>
+                This is the puzzle solution. You can use it to write the clues for the puzzle.
+                Copy the following list into a text editor and replace the words with hints.
+            </p>
             <div id="output-clues"></div>
 
         </div>

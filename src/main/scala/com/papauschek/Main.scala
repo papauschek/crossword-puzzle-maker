@@ -3,11 +3,8 @@ package com.papauschek
 import org.scalajs.dom
 import org.scalajs.dom.Element
 import org.scalajs.dom.html.{Button, Div, Input, Select}
-
 import scala.scalajs.js
 import scala.scalajs.js.Object.{entries, keys}
-
-
 
 object Main:
 
@@ -32,11 +29,13 @@ object Main:
 
   private val languageSelect = dom.document.getElementById("language-select").asInstanceOf[Select]
   private val refineButton = dom.document.getElementById("refine-button").asInstanceOf[Button]
+  private val printButton = dom.document.getElementById("print-button").asInstanceOf[Button]
 
   def main(args: Array[String]): Unit =
     generateSolution()
     generateButton.addEventListener("click", { _ => generateSolution() })
     refineButton.addEventListener("click", { _ => refineSolution() })
+    printButton.addEventListener("click", { _ => printSolution() })
 
     resultWithoutElement.addEventListener("click", { _ => renderSolution() })
     resultPartialElement.addEventListener("click", { _ => renderSolution() })
@@ -62,7 +61,6 @@ object Main:
 
     outputPuzzleElement.innerHTML = HtmlRenderer.renderPuzzle(
       refinedPuzzle,
-      widthInPixels = outputPuzzleElement.clientWidth,
       showSolution = showFullSolution,
       showPartialSolution = showPartialSolution)
 
@@ -77,6 +75,9 @@ object Main:
     println(words.length)
     refinedPuzzle = Puzzle.finalize(initialPuzzle, words.toList)
     renderSolution()
+
+  def printSolution(): Unit =
+    dom.window.print()
 
   /** normalize words and expand german umlauts */
   private def normalizeWord(word: String): String =

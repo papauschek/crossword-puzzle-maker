@@ -6,11 +6,9 @@
 * 3.11.2022: Add dictionaries for refinement feature. Add licenses. 
 * 4.11.2022: Implement basic refinement (German)
 * 5.11.2022: Implement refinement, add English dictionary.
+* 6.11.2022: Add information for clues, support for printing.
 
 ## TODO
-* Finalize UI
-  * Add clues information 
-  * Support Printing
 * Improve Performance
   * Add loading indicator
   * Check worker threads

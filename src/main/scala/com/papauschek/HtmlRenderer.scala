@@ -4,7 +4,7 @@ import org.scalajs.dom
 
 object HtmlRenderer:
 
-  def renderPuzzle(puzzle: Puzzle, widthInPixels: Int,
+  def renderPuzzle(puzzle: Puzzle,
                    showSolution: Boolean = false,
                    showPartialSolution: Boolean = false): String =
 
@@ -14,34 +14,45 @@ object HtmlRenderer:
 
     def renderCell(x: Int, y: Int): String =
       puzzle.getChar(x, y) match {
-        case ' ' => s"""<div class="crossword-cell crossword-cell-empty"></div>"""
+        case ' ' => ""
         case char =>
-          val shownSolution = {
-            if (showSolution ||
-              (showPartialSolution && partialPoints.contains(Point(x, y)))) {
-              s"""<span class="solution">$char</span>"""
-            } else {
-              ""
-            }
+
+          val showLetter = showSolution || (showPartialSolution && partialPoints.contains(Point(x, y)))
+          val svgLetter = Option.when(showLetter) {
+            s"""<text x="${x * 10 + 4.5}" y="${(y + 1) * 10 - 2}" text-anchor="middle" class="letter">$char</text>"""
           }
-          annotation.get(Point(x, y)) match {
+
+          val svgAnnotation = annotation.get(Point(x, y)) match {
             case Some(anno) if anno.nonEmpty =>
               val annotationIndices = anno.map(_.index).mkString(",")
-              s"""<div class="crossword-cell crossword-cell-char crossword-cell-annotated">$shownSolution<span class="annotation">$annotationIndices</span></div>""".stripMargin
-            case _ => s"""<div class="crossword-cell crossword-cell-char">$shownSolution</div>"""
+              Some(s"""<text x="${x * 10 + 0.8}" y="${(y + 1) * 10 - 0.8}" class="annotation">$annotationIndices</text>""")
+            case _ => None
           }
+
+          val svgCell = s"""<rect x="${x * 10}" y="${y * 10}" rx="0.5" ry="0.5" width="10" height="10"
+            |  style="fill:white;stroke:black;stroke-width:0.3" />""".stripMargin
+
+          svgCell + svgAnnotation.mkString + svgLetter.mkString
       }
 
     def renderHeight(y: Int): String =
-      val cellWidth = widthInPixels / puzzle.config.width
-      val style = s"font-size: ${cellWidth}px; width: ${widthInPixels}px"
-      val renderedRow = (0 until puzzle.config.width).map(renderCell(_, y)).mkString("\r\n")
-      s"""<div class="crossword-row" style="$style">$renderedRow</div>"""
+      (0 until puzzle.config.width).map(renderCell(_, y)).mkString("\r\n")
 
     val renderedPuzzle = (0 until puzzle.config.height).map(renderHeight).mkString("\r\n")
 
-    s"""$renderedPuzzle
-      |<div style="clear: both" class="mb-4"></div>""".stripMargin
+    s"""<svg viewBox="-1 -1 ${puzzle.config.width * 10 + 2} ${puzzle.config.height * 10 + 2}">
+      |  <style>
+      |    .annotation {
+      |      font: 3px sans-serif;
+      |      fill: #999999;
+      |    }
+      |    .letter {
+      |      font: 8px sans-serif;
+      |      fill: black;
+      |    }
+      |  </style>
+      |  $renderedPuzzle
+      |</svg>""".stripMargin
 
 
   def renderClues(puzzle: Puzzle): String =
