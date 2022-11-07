@@ -7,6 +7,7 @@
 * 4.11.2022: Implement basic refinement (German)
 * 5.11.2022: Implement refinement, add English dictionary.
 * 6.11.2022: Add information for clues, support for printing.
+* 7.11.2022: Add PoC for Web Workers.
 
 ## TODO
 * Improve Performance
