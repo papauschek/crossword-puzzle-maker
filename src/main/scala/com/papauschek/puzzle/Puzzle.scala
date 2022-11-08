@@ -1,14 +1,13 @@
-package com.papauschek
+package com.papauschek.puzzle
+
+import com.papauschek.*
+import upickle.default.*
 
 import java.nio.file.{Files, Paths}
 import scala.annotation.tailrec
 import scala.collection.mutable.ListBuffer
 import scala.io.Source
 import scala.util.Random
-
-case class PuzzleConfig(width: Int = 18, height: Int = 18,
-                        wrapping: Boolean = false
-                       )
 
 case class CharPoint(char: Char, x: Int, y: Int, vertical: Boolean)
 
@@ -193,12 +192,13 @@ case class Puzzle(chars: Array[Char], // fields of chars, empty = space char.
     resultSet
   }
 
-
 }
 
 case class AnnotatedPoint(index: Int, vertical: Boolean, word: String)
 
 object Puzzle {
+
+  implicit val rw: ReadWriter[Puzzle] = macroRW
 
   def empty(config: PuzzleConfig) : Puzzle = Puzzle(Array.fill(config.width * config.height)(' '), config, Set.empty)
 
@@ -282,5 +282,6 @@ object Puzzle {
     json.as[Puzzle]
   }
   */
+
 
 }

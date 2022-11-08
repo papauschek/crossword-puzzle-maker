@@ -1,8 +1,13 @@
-package com.papauschek
+package com.papauschek.ui
 
+import com.papauschek.puzzle.{Puzzle, PuzzleConfig, WordRating}
+import com.papauschek.ui.{Globals, HtmlRenderer}
+import com.papauschek.worker.CrosswordMain
 import org.scalajs.dom
 import org.scalajs.dom.Worker
 import org.scalajs.dom.html.{Button, Input, Select}
+import upickle.default.*
+
 import scala.scalajs.js.annotation.JSExport
 
 class MainPage:
@@ -50,6 +55,9 @@ class MainPage:
     )
     initialPuzzle = CrosswordMain.create(mainInputWords, puzzleConfig)
     refinedPuzzle = initialPuzzle
+
+    println(write(refinedPuzzle))
+
     renderSolution()
 
 
@@ -70,7 +78,6 @@ class MainPage:
   def refineSolution(): Unit =
     val language = languageSelect.value
     val words = Globals.window(language)
-    println(words.length)
     refinedPuzzle = Puzzle.finalize(initialPuzzle, words.toList)
     renderSolution()
 

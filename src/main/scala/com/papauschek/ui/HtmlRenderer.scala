@@ -1,5 +1,6 @@
-package com.papauschek
+package com.papauschek.ui
 
+import com.papauschek.puzzle.{Point, Puzzle}
 import org.scalajs.dom
 
 object HtmlRenderer:

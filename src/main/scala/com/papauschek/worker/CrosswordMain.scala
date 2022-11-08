@@ -1,4 +1,6 @@
-package com.papauschek
+package com.papauschek.worker
+
+import com.papauschek.puzzle.{Puzzle, PuzzleConfig}
 
 import java.io.File
 import java.nio.file.{Files, Path}

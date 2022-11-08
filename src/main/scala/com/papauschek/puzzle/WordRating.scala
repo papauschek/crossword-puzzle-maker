@@ -1,4 +1,4 @@
-package com.papauschek
+package com.papauschek.puzzle
 
 object WordRating {
 

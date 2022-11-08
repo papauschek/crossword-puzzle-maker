@@ -1,4 +1,4 @@
-package com.papauschek
+package com.papauschek.puzzle
 
 object Point {
   def apply(x: Int, y: Int) : Point = new Point((x.toShort & 0xffff) | (y.toShort << 16))

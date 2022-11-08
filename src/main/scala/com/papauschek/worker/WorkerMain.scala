@@ -1,5 +1,6 @@
-package com.papauschek
+package com.papauschek.worker
 
+import com.papauschek.worker.WorkerGlobal
 import org.scalajs.dom
 import scala.scalajs.js
 import scala.scalajs.js.annotation.{JSExport, JSExportTopLevel, JSGlobalScope}
@@ -17,7 +18,6 @@ object WorkerMain {
   @JSExport
   def main(): Unit = {
     WorkerGlobal.addEventListener("message", onMessage _ )
-    WorkerGlobal.postMessage(s"Started")
   }
 
   def onMessage(msg: dom.MessageEvent) = {
