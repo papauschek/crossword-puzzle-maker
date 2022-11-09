@@ -9,10 +9,9 @@
 * 6.11.2022: Add information for clues, support for printing.
 * 7.11.2022: Add PoC for Web Workers.
 * 8.11.2022: Puzzle Serialization and Web Worker Communication.
+* 9.11.2022: Finish Parallel Web Workers and Loading Indicator.
 
 ## TODO
-* Improve Performance
-  * Add loading indicator
 * Documentation
   * Code documentation
   * Readme.md

@@ -2,12 +2,12 @@ package com.papauschek.ui
 
 import com.papauschek.puzzle.{Puzzle, PuzzleConfig, WordRating}
 import com.papauschek.ui.{Globals, HtmlRenderer}
-import com.papauschek.worker.CrosswordMain
 import org.scalajs.dom
 import org.scalajs.dom.Worker
-import org.scalajs.dom.html.{Button, Input, Select}
+import org.scalajs.dom.html.{Button, Div, Input, Select}
 import upickle.default.*
 
+import concurrent.ExecutionContext.Implicits.global
 import scala.scalajs.js.annotation.JSExport
 
 class MainPage:
@@ -23,6 +23,7 @@ class MainPage:
   private val resultInfoElement = dom.document.getElementById("result-info")
 
   private val generateButton = dom.document.getElementById("generate-button").asInstanceOf[Button]
+  private val generateSpinner = dom.document.getElementById("generate-spinner").asInstanceOf[Div]
 
   private val resultWithoutElement = dom.document.getElementById("result-without").asInstanceOf[Input]
   private val resultPartialElement = dom.document.getElementById("result-partial").asInstanceOf[Input]
@@ -53,12 +54,17 @@ class MainPage:
       width = widthInputElement.valueAsNumber.toInt,
       height = heightInputElement.valueAsNumber.toInt
     )
-    initialPuzzle = CrosswordMain.create(mainInputWords, puzzleConfig)
-    refinedPuzzle = initialPuzzle
+    generateSpinner.classList.remove("invisible")
+    generateButton.classList.add("invisible")
 
-    println(write(refinedPuzzle))
-
-    renderSolution()
+    PuzzleGenerator.send(NewPuzzleMessage(puzzleConfig, mainInputWords)).foreach {
+      puzzles =>
+        generateSpinner.classList.add("invisible")
+        generateButton.classList.remove("invisible")
+        initialPuzzle = puzzles.maxBy(_.rating)
+        refinedPuzzle = initialPuzzle
+        renderSolution()
+    }
 
 
   def renderSolution(): Unit =

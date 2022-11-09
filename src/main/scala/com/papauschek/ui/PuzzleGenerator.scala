@@ -1,16 +1,17 @@
 package com.papauschek.ui
 
+import com.papauschek.puzzle.{Puzzle, PuzzleConfig}
 import org.scalajs.dom.{Element, Worker}
-
 import scala.concurrent.{Future, Promise}
+import upickle.default.*
 
 /** puzzle generator that is parallelized using Web Workers */
 object PuzzleGenerator {
 
   private val WORKER_COUNT = 4
 
-  private var results = Seq.empty[Any]
-  private var promise: Promise[Seq[Any]] = Promise.successful(Nil)
+  private var results = Seq.empty[Puzzle]
+  private var promise: Promise[Seq[Puzzle]] = Promise.successful(Nil)
 
   private val workers = (0 until WORKER_COUNT).map(_ => new Worker("worker.js"))
 
@@ -18,22 +19,29 @@ object PuzzleGenerator {
     worker =>
       worker.onmessage = {
         msg =>
-          println(s"Received: ${msg.data}")
-          results :+= msg.data
+          val puzzle = read[Puzzle](msg.data.toString)
+          results :+= puzzle
           if (results.length == WORKER_COUNT) {
-            println("promised")
             promise.success(results)
           }
       }
   }
 
-  def send(): Future[Seq[Any]] = {
+  def send(newPuzzleMessage: NewPuzzleMessage): Future[Seq[Puzzle]] = {
     results = Nil
-    promise = Promise[Seq[Any]]
+    promise = Promise[Seq[Puzzle]]
     workers.foreach {
-      worker => worker.postMessage("Message")
+      worker => worker.postMessage(write(newPuzzleMessage))
     }
     promise.future
   }
+
+}
+
+case class NewPuzzleMessage(puzzleConfig: PuzzleConfig, words: Seq[String])
+
+object NewPuzzleMessage {
+
+  implicit val rw: ReadWriter[NewPuzzleMessage] = macroRW
 
 }

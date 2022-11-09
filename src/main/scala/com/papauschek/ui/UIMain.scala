@@ -15,8 +15,5 @@ object UIMain:
 
   @JSExport
   def main(): Unit = {
-    PuzzleGenerator.send().foreach {
-      seq => println(s"Future: $seq")
-    }
     new MainPage
   }
