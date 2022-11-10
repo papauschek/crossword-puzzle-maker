@@ -4,7 +4,7 @@ import com.papauschek.puzzle.{Puzzle, PuzzleConfig, PuzzleWords}
 import com.papauschek.ui.{Globals, HtmlRenderer}
 import org.scalajs.dom
 import org.scalajs.dom.Worker
-import org.scalajs.dom.html.{Button, Div, Input, Select}
+import org.scalajs.dom.html.{Button, Div, Input, Select, TextArea}
 import upickle.default.*
 import concurrent.ExecutionContext.Implicits.global
 import scala.scalajs.js.annotation.JSExport
@@ -17,7 +17,7 @@ class MainPage:
 
   private var mainInputWords: Seq[String] = Nil
 
-  private val inputElement = dom.document.getElementById("input")
+  private val inputElement = dom.document.getElementById("input").asInstanceOf[TextArea]
   private val outputPuzzleElement = dom.document.getElementById("output-puzzle")
   private val outputCluesElement = dom.document.getElementById("output-clues")
   private val resultInfoElement = dom.document.getElementById("result-info")
@@ -47,24 +47,27 @@ class MainPage:
 
   /** read the words from the user interface and generate the puzzle in the background using web workers */
   def generateSolution(): Unit =
-    val rawInputWords = inputElement.innerHTML.linesIterator.map(normalizeWord).toSeq
+    val rawInputWords = inputElement.value.linesIterator.map(normalizeWord).toSeq
     val inputWords = rawInputWords.filter(word => word.nonEmpty && !word.startsWith("#"))
-    mainInputWords = PuzzleWords.sortByBest(inputWords)
-    val puzzleConfig = PuzzleConfig(
-      width = widthInputElement.valueAsNumber.toInt,
-      height = heightInputElement.valueAsNumber.toInt
-    )
-    generateSpinner.classList.remove("invisible")
-    generateButton.classList.add("invisible")
+    if (inputWords.nonEmpty) {
+      mainInputWords = PuzzleWords.sortByBest(inputWords)
+      val puzzleConfig = PuzzleConfig(
+        width = widthInputElement.valueAsNumber.toInt,
+        height = heightInputElement.valueAsNumber.toInt
+      )
+      generateSpinner.classList.remove("invisible")
+      generateButton.classList.add("invisible")
 
-    PuzzleGenerator.send(NewPuzzleMessage(puzzleConfig, mainInputWords)).foreach {
-      puzzles =>
-        generateSpinner.classList.add("invisible")
-        generateButton.classList.remove("invisible")
-        initialPuzzle = puzzles.maxBy(_.density)
-        refinedPuzzle = initialPuzzle
-        renderSolution()
+      PuzzleGenerator.send(NewPuzzleMessage(puzzleConfig, mainInputWords)).foreach {
+        puzzles =>
+          generateSpinner.classList.add("invisible")
+          generateButton.classList.remove("invisible")
+          initialPuzzle = puzzles.maxBy(_.density)
+          refinedPuzzle = initialPuzzle
+          renderSolution()
+      }
     }
+
 
   /** show the generated puzzle */
   def renderSolution(): Unit =
