@@ -1,15 +1,15 @@
 package com.papauschek.ui
 
-import com.papauschek.puzzle.{Puzzle, PuzzleConfig, WordRating}
+import com.papauschek.puzzle.{Puzzle, PuzzleConfig, PuzzleWords}
 import com.papauschek.ui.{Globals, HtmlRenderer}
 import org.scalajs.dom
 import org.scalajs.dom.Worker
 import org.scalajs.dom.html.{Button, Div, Input, Select}
 import upickle.default.*
-
 import concurrent.ExecutionContext.Implicits.global
 import scala.scalajs.js.annotation.JSExport
 
+/** the main user interface based on the `index.html` */
 class MainPage:
 
   private var initialPuzzle: Puzzle = Puzzle.empty(PuzzleConfig())
@@ -45,11 +45,11 @@ class MainPage:
   resultPartialElement.addEventListener("click", { _ => renderSolution() })
   resultFullElement.addEventListener("click", { _ => renderSolution() })
 
-
+  /** read the words from the user interface and generate the puzzle in the background using web workers */
   def generateSolution(): Unit =
     val rawInputWords = inputElement.innerHTML.linesIterator.map(normalizeWord).toSeq
     val inputWords = rawInputWords.filter(word => word.nonEmpty && !word.startsWith("#"))
-    mainInputWords = WordRating.getBest(inputWords)
+    mainInputWords = PuzzleWords.sortByBest(inputWords)
     val puzzleConfig = PuzzleConfig(
       width = widthInputElement.valueAsNumber.toInt,
       height = heightInputElement.valueAsNumber.toInt
@@ -66,7 +66,7 @@ class MainPage:
         renderSolution()
     }
 
-
+  /** show the generated puzzle */
   def renderSolution(): Unit =
     val showPartialSolution = resultPartialElement.checked
     val showFullSolution = resultFullElement.checked
@@ -80,13 +80,14 @@ class MainPage:
     resultInfoElement.innerHTML = HtmlRenderer.renderPuzzleInfo(refinedPuzzle, unusedWords)
     outputCluesElement.innerHTML = HtmlRenderer.renderClues(refinedPuzzle)
 
-
+  /** add words from a chosen dictionary to the puzzle */
   def refineSolution(): Unit =
     val language = languageSelect.value
     val words = Globals.window(language)
     refinedPuzzle = Puzzle.finalize(initialPuzzle, words.toList)
     renderSolution()
 
+  /** show the print dialog */
   def printSolution(): Unit =
     dom.window.print()
 

@@ -5,6 +5,10 @@ import org.scalajs.dom
 
 object HtmlRenderer:
 
+  /** @return HTML for rendering a puzzle
+   * @param puzzle the puzzle to render
+   * @param showSolution if true, shows the solution (all characters) of the puzzle
+   * @param showPartialSolution if true, shows some randomly selected solution characters of the puzzle (but not all of them) */
   def renderPuzzle(puzzle: Puzzle,
                    showSolution: Boolean = false,
                    showPartialSolution: Boolean = false): String =
@@ -56,6 +60,7 @@ object HtmlRenderer:
       |</svg>""".stripMargin
 
 
+  /** @return HTML representing the clues (= solution) words for this puzzle */
   def renderClues(puzzle: Puzzle): String =
 
     val annotation = puzzle.getAnnotation
@@ -80,6 +85,7 @@ object HtmlRenderer:
        |""".stripMargin
 
 
+  /** @return HTML representing some additional info about the puzzle, such as density and discarded words. */
   def renderPuzzleInfo(puzzle: Puzzle, unusedWords: Seq[String]): String =
     val infoText = s"This puzzle has a <strong>density of ${(puzzle.density * 100).round}%</strong>. " +
       s"This is the area covered by letters. " +
