@@ -61,7 +61,7 @@ class MainPage:
       puzzles =>
         generateSpinner.classList.add("invisible")
         generateButton.classList.remove("invisible")
-        initialPuzzle = puzzles.maxBy(_.rating)
+        initialPuzzle = puzzles.maxBy(_.density)
         refinedPuzzle = initialPuzzle
         renderSolution()
     }

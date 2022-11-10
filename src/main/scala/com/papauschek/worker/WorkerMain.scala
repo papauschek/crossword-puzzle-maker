@@ -39,16 +39,16 @@ object WorkerMain {
     val puzzles = (0 until 1000).flatMap {
       _ =>
         val puzzles = Puzzle.generate(mainWords.head, mainWords.tail.toList, minConfig)
-        val puzzle = puzzles.maxBy(_.rating)
+        val puzzle = puzzles.maxBy(_.density)
         count += 1
-        if (puzzle.rating > bestRating) {
-          bestRating = puzzle.rating
+        if (puzzle.density > bestRating) {
+          bestRating = puzzle.density
         }
         puzzles
-    }.sortBy(-_.rating)
+    }.sortBy(-_.density)
     val end = System.currentTimeMillis()
     val bestPuzzle = puzzles.head
-    println(s"Best rating: ${bestPuzzle.rating} (${bestPuzzle.density}%) - $count - ms: ${end - start}")
+    println(s"Best density: ${bestPuzzle.density}% - $count - ms: ${end - start}")
     bestPuzzle
 
 
