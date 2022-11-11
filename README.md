@@ -1,6 +1,11 @@
+[![Scala CI](https://github.com/papauschek/crossword-puzzle-maker/actions/workflows/scala.yml/badge.svg)](https://github.com/papauschek/crossword-puzzle-maker/actions/workflows/scala.yml)
+
 # Chris' Crossword Puzzle Generator
 
 A crossword puzzle generator that creates dense puzzles.
+
+**Try it out here:**
+**https://papauschek.github.io/crossword-puzzle-maker/**
 
 ## Features
 
