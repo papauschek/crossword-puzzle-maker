@@ -14,7 +14,7 @@ object PuzzleGenerator:
   /** configure web workers and collect results */
   private var results = Seq.empty[Puzzle]
   private var promise: Promise[Seq[Puzzle]] = Promise.successful(Nil)
-  private val workers = (0 until WORKER_COUNT).map(_ => new Worker("worker.js"))
+  private val workers = (0 until WORKER_COUNT).map(_ => new Worker("js/worker.js"))
   workers.foreach {
     worker =>
       worker.onmessage = {
