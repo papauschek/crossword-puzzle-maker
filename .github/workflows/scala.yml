@@ -29,8 +29,6 @@ jobs:
         cache: 'sbt'
     - name: Build via SBT
       run: sbt fullOptJS
-    - name: Copy Files
-      run: cp target/scala-3.2.0/crossword-puzzle-maker-opt/main.js docs/js/main.js
     - name: Archive artifact
       run: |
         tar \
