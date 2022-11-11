@@ -28,7 +28,41 @@ jobs:
         distribution: 'temurin'
         cache: 'sbt'
     - name: Run tests
-      run: sbt test
-      # Optional: This step uploads information to the GitHub dependency graph and unblocking Dependabot alerts for the repository
-    - name: Upload dependency graph
-      uses: scalacenter/sbt-dependency-submission@ab086b50c947c9774b70f39fc7f6e20ca2706c91
+      run: sbt fastOptJS
+    - name: Archive artifact
+      run: |
+        tar \
+        --dereference --hard-dereference \
+        --directory "docs" \
+        -cvf "$RUNNER_TEMP/artifact.tar" \
+        --exclude=.git \
+        --exclude=.github \
+        .
+    - name: Upload artifact
+      uses: actions/upload-artifact@main
+      with:
+        name: github-pages
+        path: ${{ runner.temp }}/artifact.tar
+        retention-days: 7
+
+  # Deploy job
+  deploy:
+    # Add a dependency to the build job
+    needs: build
+
+    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
+
+    # Deploy to the github-pages environment
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    # Specify runner + deployment step
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1
