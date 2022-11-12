@@ -35,8 +35,11 @@ class MainPage:
   private val languageSelect = dom.document.getElementById("language-select").asInstanceOf[Select]
   private val refineButton = dom.document.getElementById("refine-button").asInstanceOf[Button]
   private val printButton = dom.document.getElementById("print-button").asInstanceOf[Button]
+
+  private val resultRow = dom.document.getElementById("result-row").asInstanceOf[Div]
+  private val refineRow = dom.document.getElementById("refine-row").asInstanceOf[Div]
+  private val cluesRow = dom.document.getElementById("clues-row").asInstanceOf[Div]
   
-  generateSolution()
   generateButton.addEventListener("click", { _ => generateSolution() })
   refineButton.addEventListener("click", { _ => refineSolution() })
   printButton.addEventListener("click", { _ => printSolution() })
@@ -62,6 +65,9 @@ class MainPage:
         puzzles =>
           generateSpinner.classList.add("invisible")
           generateButton.classList.remove("invisible")
+          resultRow.classList.remove("invisible")
+          refineRow.classList.remove("invisible")
+          cluesRow.classList.remove("invisible")
           initialPuzzle = puzzles.maxBy(_.density)
           refinedPuzzle = initialPuzzle
           renderSolution()
