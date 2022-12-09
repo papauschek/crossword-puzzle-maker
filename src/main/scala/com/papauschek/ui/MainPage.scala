@@ -86,13 +86,14 @@ class MainPage:
       showPartialSolution = showPartialSolution)
 
     val unusedWords = mainInputWords.filterNot(refinedPuzzle.words.contains)
+    val extraWords = refinedPuzzle.words -- initialPuzzle.words
     resultInfoElement.innerHTML = HtmlRenderer.renderPuzzleInfo(refinedPuzzle, unusedWords)
-    outputCluesElement.innerHTML = HtmlRenderer.renderClues(refinedPuzzle)
+    outputCluesElement.innerHTML = HtmlRenderer.renderClues(refinedPuzzle, extraWords)
 
   /** add words from a chosen dictionary to the puzzle */
   def refineSolution(): Unit =
     val language = languageSelect.value
-    val words = Globals.window(language)
+    val words = Globals.window(language).filter(_.length >= 4)
     refinedPuzzle = Puzzle.finalize(initialPuzzle, words.toList)
     renderSolution()
 

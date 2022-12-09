@@ -61,14 +61,16 @@ object HtmlRenderer:
 
 
   /** @return HTML representing the clues (= solution) words for this puzzle */
-  def renderClues(puzzle: Puzzle): String =
+  def renderClues(puzzle: Puzzle, extraWords: Set[String]): String =
 
     val annotation = puzzle.getAnnotation
     val sortedAnnotationValues = annotation.values.flatten.toSeq.sortBy(_.index)
 
     def renderDescriptions(vertical: Boolean): String = {
       sortedAnnotationValues.filter(_.vertical == vertical).map {
-        p => "<div>" + p.index + ") " + p.word + "</div>"
+        p =>
+          val formattedWord = if (extraWords.contains(p.word)) s"<strong>${p.word}</strong>" else p.word
+          "<div>" + p.index + ") " + formattedWord + "</div>"
       }.mkString("\r\n")
     }
 
