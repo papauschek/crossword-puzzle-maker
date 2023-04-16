@@ -4,3 +4,6 @@
 /target/
 /.bsp/
 /.idea
+.bloop
+/project/project
+/.metals
