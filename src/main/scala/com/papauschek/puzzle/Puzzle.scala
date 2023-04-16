@@ -7,6 +7,10 @@ import scala.annotation.tailrec
 import scala.collection.mutable.ListBuffer
 import scala.io.Source
 import scala.util.Random
+import scalajs.js.Any as JsAny
+import scalajs.js.Array as JsArray
+import scalajs.js.Dictionary as JsDictionary
+import scalajs.js.JSON
 
 /** represents a complete crossword puzzle with all its characters and words.
  * @param chars represents the solution characters and empty spaces in the rectangular puzzle.
@@ -192,6 +196,75 @@ case class Puzzle(chars: Array[Char],
       }
     }
     resultSet
+
+  /** @return parse self data to JSON */
+  def parseToJSON(mainInputWords: Seq[String]): String =
+    // グリッド作成
+    def getCharAsString(x: Int, y: Int): String =
+      var c = getChar(x, y) 
+      if (c == ' ') {
+        return "-"
+      }
+      return c.toString()
+
+    var grid = JsArray[JsArray[String]]()
+    (0 until config.height).foreach(y => {
+      var row = JsArray[String]()
+      (0 until config.width).foreach(x => {
+        row.push(getCharAsString(x, y))
+      })
+      grid.push(row)
+    })
+
+    // 単語リスト作成
+    var wordList = JsDictionary(
+      "across" -> JsDictionary[JsDictionary[JsAny]](),
+      "down" -> JsDictionary[JsDictionary[JsAny]](),
+    )
+
+    var index = 0
+    val points = for {
+      x <- 0 until config.width
+      y <- 0 until config.height
+      nonEmpty = !isEmpty(x, y)
+      vertical = isEmpty(x, y - 1)
+      horizontal = isEmpty(x - 1, y)
+        if nonEmpty && (vertical || horizontal)
+    } yield {
+      val point = Point(x, y)
+      val vWord = getWord(point, true)
+      val hWord = getWord(point, false)
+      if (vertical && vWord.length > 1) {
+        index += 1
+        wordList("down")(index.toString()) = JsDictionary(
+          "clue" -> s"${vWord}のヒント",
+          "answer" -> vWord,
+          "row" -> y,
+          "col" -> x,
+        )
+      }
+      if (horizontal && hWord.length > 1) {
+        index += 1
+        wordList("across")(index.toString()) = JsDictionary(
+          "clue" -> s"${hWord}のヒント",
+          "answer" -> hWord,
+          "row" -> y,
+          "col" -> x,
+        )
+      }
+    }
+
+    // 未使用の単語
+    val unusedWords = mainInputWords.filterNot(words.contains)
+    val unusedWordsJs = JsArray[String]()
+    unusedWords.foreach(word => {
+      unusedWordsJs.push(word)
+    })
+    JSON.stringify(JsDictionary(
+      "grid" -> grid,
+      "wordList" -> wordList,
+      "unusedWords" -> unusedWordsJs,
+    ))
 
 
 object Puzzle:
