@@ -1,0 +1,21 @@
+{
+  "name" : "@qingshui-hui/crossword-puzzle-maker",
+  "description" : "NPM Package Created By sbt-npm-package",
+  "version" : "0.1.1",
+  "type" : "commonjs",
+  "repository" : {
+    "type" : "git",
+    "url" : "https://github.com/qingshui-hui/crossword-puzzle-maker.git"
+  },
+  "author" : "qingshui-hui",
+  "main" : "dist/main.js",
+  "dependencies" : {},
+  "devDependencies" : {},
+  "keywords" : [],
+  "files": [
+    "/dist"
+  ],
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  }
+}

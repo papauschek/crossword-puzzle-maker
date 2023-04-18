@@ -2,7 +2,7 @@ enablePlugins(ScalaJSPlugin)
 
 name := "crossword-puzzle-maker"
 
-version := "0.1.0-SNAPSHOT"
+version := "0.1.1"
 
 scalaVersion := "3.2.0"
 
@@ -13,5 +13,4 @@ libraryDependencies ++= Seq(
 
 // Output Directory for Main Javascript Application
 Compile / fastOptJS / artifactPath := baseDirectory.value / "docs/js/main.js"
-Compile / fullOptJS / artifactPath := baseDirectory.value / "docs/js/main.js"
-
+Compile / fullOptJS / artifactPath := baseDirectory.value / "dist/index.js"

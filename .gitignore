@@ -7,3 +7,6 @@
 .bloop
 /project/project
 /.metals
+/.env
+/dist/index.js
+/dist/index.js.map
