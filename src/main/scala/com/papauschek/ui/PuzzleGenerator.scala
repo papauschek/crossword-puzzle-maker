@@ -14,7 +14,17 @@ object PuzzleGenerator:
   /** configure web workers and collect results */
   private var results = Seq.empty[Puzzle]
   private var promise: Promise[Seq[Puzzle]] = Promise.successful(Nil)
-  private val workers = (0 until WORKER_COUNT).map(_ => new Worker("js/worker.js"))
+
+  private val workers =  {
+    try {
+      (0 until WORKER_COUNT).map(_ => new Worker("./js/worker.js"))
+    } catch {
+      case ex: Throwable =>
+        println("ERROR: Web Workers are not supported when running from local filesystem.")
+        throw new Exception("Running this application from a local file system is not supported, as it makes use of Web Workers. Please run it from a http(s) protocol.", ex)
+    }
+  }
+
   workers.foreach {
     worker =>
       worker.onmessage = {

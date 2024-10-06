@@ -26,7 +26,14 @@ The crossword puzzle algorithm takes your list of words as input,
 and then randomly generates many possible puzzles using these words.
 It then selects the puzzle with the most words (most density).
 
-Web Workers are used to distribute the work of creating puzzles across multiple CPUs. 
+Web Workers are used to distribute the work of creating puzzles across multiple CPUs.
+
+## How to build
+
+You need to have `sbt` installed. Run `sbt fullOptJS` to build the app. This bundles the app as a JavaScript file in `docs/js/main.js`.
+
+Then you need to open `docs/index.html` in your browser. However, there is a catch: this app needs Web Workers to run in the browser. Most browsers (e.g. Chrome) disallow running web workers on files loaded from the local filesystem.
+So you need some a local web server to serve the docs folder, and then you're good to go. Some IDEs like IntelliJ have a small web server included, so there you can right-click `index.html` and select "Open in Browser". 
 
 ## Third Party Libraries
 
