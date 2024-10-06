@@ -39,11 +39,12 @@ jobs:
         --exclude=.github \
         .
     - name: Upload artifact
-      uses: actions/upload-artifact@main
+      uses: actions/upload-artifact@v4
       with:
         name: github-pages
         path: ${{ runner.temp }}/artifact.tar
         retention-days: 7
+        if-no-files-found: error
 
   # Deploy job
   deploy:
@@ -64,9 +65,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: github-pages   # Name of the artifact uploaded during the build job
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v1
+        uses: actions/deploy-pages@v4
