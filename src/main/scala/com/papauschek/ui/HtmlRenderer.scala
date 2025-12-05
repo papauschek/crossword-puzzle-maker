@@ -60,17 +60,23 @@ object HtmlRenderer:
       |</svg>""".stripMargin
 
 
+  val alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
   /** @return HTML representing the clues (= solution) words for this puzzle */
   def renderClues(puzzle: Puzzle, extraWords: Set[String]): String =
 
-    val annotation = puzzle.getAnnotation
-    val sortedAnnotationValues = annotation.values.flatten.toSeq.sortBy(_.index)
+    val annotations = puzzle.getFullAnnotation.sortBy(_.index)
 
     def renderDescriptions(vertical: Boolean): String = {
+      val sortedAnnotationValues =
+        if (vertical) annotations.sortBy(a => (a.location.x, a.location.y))
+        else annotations.sortBy(a => (a.location.y, a.location.x))
       sortedAnnotationValues.filter(_.vertical == vertical).map {
         p =>
-          val formattedWord = if (extraWords.contains(p.word)) s"<strong>${p.word}</strong>" else p.word
-          "<div>" + p.index + ") " + formattedWord + "</div>"
+          val formattedWord = if (extraWords.contains(p.fullWord)) s"<strong>${p.fullWord}</strong>" else p.fullWord
+          val formattedLocation = s"${p.location.x + 1}${alphabet.lift.apply(p.location.y).getOrElse(' ')}"
+          //"<div>" + p.index + ") " + formattedWord + "</div>"
+          "<div>" + formattedLocation + ") " + formattedWord + "</div>"
       }.mkString("\r\n")
     }
 

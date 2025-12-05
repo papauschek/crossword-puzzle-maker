@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(sbt test)",
+      "Bash(sbt \"testOnly com.papauschek.puzzle.PuzzleSuite\")",
+      "Bash(sbt clean:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

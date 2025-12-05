@@ -132,6 +132,49 @@ case class Puzzle(chars: Array[Char],
     }.mkString(Seq.fill(config.width)('#').mkString + "##\r\n#", "#\r\n#", "#\r\n##" + Seq.fill(config.width)('#').mkString)
     s"Density: ${(density * 100).toInt}%, Words: ${words.size}, ${config.width}x${config.height}\r\n" + board
 
+  /** @return reconstructed annotations with full words (including spaces) from the original word list */
+  def getFullAnnotation: Seq[AnnotatedWord] =
+    val annotations = getAnnotation
+    val result = ListBuffer.empty[AnnotatedWord]
+
+    // For each word in the original words set, find where it appears in the puzzle
+    for (word <- words) {
+      // Try all possible starting positions and orientations
+      for {
+        x <- 0 until config.width
+        y <- 0 until config.height
+        vertical <- Seq(true, false)
+        if matchesWordAtLocation(word, x, y, vertical)
+      } {
+        val point = Point(x, y)
+        // Find the annotation index for this position and orientation
+        annotations.get(point).foreach { annotatedPoints =>
+          annotatedPoints.find(_.vertical == vertical).foreach { annotatedPoint =>
+            result += AnnotatedWord(word, vertical, annotatedPoint.index, point)
+          }
+        }
+      }
+    }
+
+    result.toSeq.sortBy(_.index)
+
+  /** @return true if the given word exactly matches at the given location in the puzzle */
+  private def matchesWordAtLocation(word: String, x: Int, y: Int, vertical: Boolean): Boolean =
+    // Check if this is the start of a word (empty space before it)
+    val isStart = if (vertical) isEmpty(x, y - 1) else isEmpty(x - 1, y)
+    if (!isStart) return false
+
+    // Check if all characters match
+    val allMatch = (0 until word.length).forall { index =>
+      val (locX, locY) = if (vertical) (x, y + index) else (x + index, y)
+      getChar(locX, locY) == word(index)
+    }
+    if (!allMatch) return false
+
+    // Check if this is the end of a word (empty space after it)
+    val isEnd = if (vertical) isEmpty(x, y + word.length) else isEmpty(x + word.length, y)
+    isEnd
+
   /** @return all annotations for each point in the puzzle that needs to be annotated.
    *          an annotation represents the start of a word in the puzzle */
   def getAnnotation: Map[Point, Seq[AnnotatedPoint]] =

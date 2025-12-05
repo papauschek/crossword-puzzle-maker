@@ -25,3 +25,10 @@ case class CharPoint(char: Char, x: Int, y: Int, vertical: Boolean)
  * @param vertical true if the word is oriented vertically in the puzzle, false if horizontally.
  * @param word the word that starts at the annotated position */
 case class AnnotatedPoint(index: Int, vertical: Boolean, word: String)
+
+/** a reconstructed word in the puzzle with its full text (including spaces).
+ * @param fullWord the complete word as it appears in the original word list (may contain spaces)
+ * @param vertical true if the word is oriented vertically in the puzzle, false if horizontally.
+ * @param index the number of the word in the puzzle. the first word has index = 1.
+ * @param location the starting point of the word in the puzzle */
+case class AnnotatedWord(fullWord: String, vertical: Boolean, index: Int, location: Point)
