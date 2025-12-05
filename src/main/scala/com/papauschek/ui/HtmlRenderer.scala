@@ -75,8 +75,8 @@ object HtmlRenderer:
         p =>
           val formattedWord = if (extraWords.contains(p.fullWord)) s"<strong>${p.fullWord}</strong>" else p.fullWord
           val formattedLocation = s"${p.location.x + 1}${alphabet.lift.apply(p.location.y).getOrElse(' ')}"
-          //"<div>" + p.index + ") " + formattedWord + "</div>"
-          "<div>" + formattedLocation + ") " + formattedWord + "</div>"
+          "<div>" + p.index + ") " + formattedWord + "</div>"
+          //"<div>" + formattedLocation + ") " + formattedWord + "</div>"
       }.mkString("\r\n")
     }
 
